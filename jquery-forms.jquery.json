@@ -1,0 +1,26 @@
+{
+  "name": "jquery-forms",
+  "title": "jQuery Forms",
+  "description": "The best jQuery plugin ever.",
+  "version": "0.0.1",
+  "homepage": "https://github.com/yola/jquery-forms",
+  "author": {
+    "name": "Yola",
+    "email": "ian@yola.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/yola/jquery-forms.git"
+  },
+  "bugs": "https://github.com/yola/jquery-forms/issues",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/yola/jquery-forms/blob/master/LICENSE-MIT"
+    }
+  ],
+  "dependencies": {
+    "jquery": "1.*"
+  },
+  "keywords": []
+}
