@@ -1,89 +1,78 @@
-'use strict';
-
 module.exports = function(grunt) {
+  "use strict";
 
-  // Project configuration.
+  require("load-grunt-tasks")(grunt);
+
+  var testemConfig = grunt.file.readJSON("testem.json");
+
   grunt.initConfig({
-    // Metadata.
-    pkg: grunt.file.readJSON('jquery-forms.jquery.json'),
-    banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
-      '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-      '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
-      '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-      ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
-    // Task configuration.
+    pkg: grunt.file.readJSON("package.json"),
     clean: {
-      files: ['dist']
+      "old built assets": {
+        src: ["build"]
+      }
     },
-    concat: {
-      options: {
-        banner: '<%= banner %>',
-        stripBanners: true
+    watch: {
+      requirejs: {
+        files: ["src/**/*.js"],
+        tasks: ["clean", "jshint", "requirejs", "testem"]
       },
-      dist: {
-        src: ['src/<%= pkg.name %>.js'],
-        dest: 'dist/<%= pkg.name %>.js'
-      },
-    },
-    uglify: {
-      options: {
-        banner: '<%= banner %>'
-      },
-      dist: {
-        src: '<%= concat.dist.dest %>',
-        dest: 'dist/<%= pkg.name %>.min.js'
-      },
-    },
-    jasmine: {
-      test: {
-        src: 'src/jquery-forms.js',
-        options: {
-          specs: 'spec/*Spec.js',
-          helpers: 'spec/*Helper.js',
-          vendor: ['libs/jquery/jquery.js']
-        }
+      jsTests: {
+        files: ["tests/spec-runner-template.html", "tests/**/*.js"],
+        tasks: ["jshint", "testem"]
       }
     },
     jshint: {
-      gruntfile: {
-        options: {
-          jshintrc: '.jshintrc'
-        },
-        src: 'Gruntfile.js'
+      options: {
+        jshintrc: "bower_components/jsgreat/.jshintrc"
       },
-      src: {
-        options: {
-          jshintrc: 'src/.jshintrc'
-        },
-        src: ['src/**/*.js']
-      },
-      test: {
-
-      },
+      configs: [
+        "Gruntfile.js",
+        "package.json",
+        "bower.json"
+      ],
+      mvc: ["src/**/*.js"],
+      jstests: ["tests/**/*.js"]
     },
-    watch: {
-      gruntfile: {
-        files: '<%= jshint.gruntfile.src %>',
-        tasks: ['jshint:gruntfile']
-      },
-      src: {
-
-      },
-      test: {
-
-      },
+    requirejs: {
+      compile: {
+        options: {
+          mainConfigFile: "require-config.js"
+        }
+      }
     },
+    testem: {
+      local: {
+        src: testemConfig.src_files,
+        options: testemConfig
+      }
+    },
+    env : {
+      phantom : {
+        push : {
+          PATH : {
+            value : "node_modules/grunt-contrib-jasmine/node_modules/grunt-lib-phantomjs/node_modules/.bin",
+            delimiter : ":"
+          }
+        }
+      }
+    }
   });
 
-  // These plugins provide necessary tasks.
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-jasmine');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.registerTask("default", [
+    "clean",
+    "requirejs",
+    "watch"
+  ]);
 
-  // Default task.
-  grunt.registerTask('default', ['jshint', 'clean', 'jasmine', 'concat', 'uglify']);
+  grunt.registerTask("test", [
+    "env:phantom",
+    "testem"
+  ]);
 
+  grunt.registerTask("build", [
+    "clean",
+    "jshint",
+    "requirejs"
+  ]);
 };

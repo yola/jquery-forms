@@ -1,0 +1,12 @@
+{
+  "test_page": "spec-runner.mustache",
+  "parallel": 1,
+  "launch_in_ci": ["PhantomJS"],
+  "launch_in_dev": ["Chrome"],
+  "fail_on_zero_tests": true,
+  "timeout": 15000,
+  "src_files": [
+    "bower_components/jasmine-jquery/lib/jasmine-jquery.js",
+    "tests/**/*.js"
+  ]
+}

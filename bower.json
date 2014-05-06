@@ -1,0 +1,32 @@
+{
+  "name": "jquery-forms",
+  "version": "0.0.0",
+  "homepage": "https://github.com/yola/jquery-forms",
+  "authors": [
+    "Yola Engineering <engineers@yola.com>"
+  ],
+  "main": "src/jquery-forms.js",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jsgreat": "https://github.com/yola/jsgreat.git#0.1.0",
+    "lodash": "~2.4.1"
+  },
+  "devDependencies": {
+    "requirejs": "2.1.x",
+    "jquery": "1.10.2",
+    "jasmine": "1.3.x",
+    "jasmine-jquery": "1.7.x",
+    "jquery-messages": "0.0.2"
+  }
+}

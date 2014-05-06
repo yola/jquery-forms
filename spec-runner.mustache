@@ -1,0 +1,68 @@
+<html>
+<head>
+  <title>Tests</title>
+  <link rel="stylesheet" href="bower_components/jasmine/lib/jasmine-core/jasmine.css" />
+</head>
+
+<body>
+  <script src="bower_components/jasmine/lib/jasmine-core/jasmine.js"></script>
+  <script src="bower_components/jasmine/lib/jasmine-core/jasmine-html.js"></script>
+  <script src="/testem.js"></script>
+  <script src="bower_components/requirejs/require.js"></script>
+
+  <script>
+    var startJasmine = function(){
+      var env = jasmine.getEnv();
+      env.addReporter(new jasmine.HtmlReporter);
+      env.execute();
+    };
+
+    requirejs.onError = function (err) {
+      //Testem only hooks into the jasmine reporter for output, not
+      //into the console. We have to force a test failure to make
+      //requirejs errors show up in the console.
+      describe("RequireJS Error", function(){
+        it("tests were not run", function(){
+          expect(err).toBeUndefined();
+          expect(err).not.toBeDefined();
+        });
+      });
+      startJasmine();
+    };
+
+
+    //jasmine-jquery requires jquery, so we need to set up a shim config for it
+    requirejs.config({
+      paths: {
+        "jquery-messages": "bower_components/jquery-messages/dist/messages",
+        "jquery": "bower_components/jquery/jquery",
+        "jquery-forms": "src/jquery-forms",
+        "lodash": "bower_components/lodash/dist/lodash"
+      },
+      shim: {
+        "jquery-messages": {
+          deps: ["jquery"]
+        },
+        "jquery-forms": {
+          deps: ["jquery", "jquery-messages"]
+        },
+        // Plain old `testem` adds jasmine-jquery _without_ the server and port
+        "bower_components/jasmine-jquery/lib/jasmine-jquery.js": {
+          deps: ["jquery"]
+        },
+        // But `grunt testem` adds jasmin-jquery _with_ the server and port (sigh)
+        "http://localhost:7358/bower_components/jasmine-jquery/lib/jasmine-jquery.js": {
+          deps: ["jquery"]
+        }
+      }
+    });
+
+    var specs = [];
+    //#serve_files block is provided by testem
+    {{#serve_files}}
+    specs.push("{{src}}");
+    {{/serve_files}}
+    require(specs, startJasmine);
+  </script>
+</body>
+</html>
